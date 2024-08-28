@@ -21,14 +21,20 @@ export class CommentFormComponent {
     tags: { userID: number, name: string }[] = [];
     comment = '';
     words = this.comment.split(' ');
+    latestAt = 0;
 
     getLatestCh() {
         let element = this.commentField.nativeElement;
-        return element.value[element.selectionStart - 1];
+        let ch = element.value[element.selectionStart - 1];
+        if(ch === '@') {
+            this.latestAt = element.selectionStart;
+        }
+        return ch;
     }
 
     selectName(name: string, userID: number) {
-        this.comment += name;
+        let element = this.commentField.nativeElement;
+        this.comment = this.comment.substring(0, this.latestAt) + name;
         this.displayUserSelect = false;
         this.commentField.nativeElement.focus();
         this.tags.push({ 'userID': userID, 'name': name });
@@ -36,10 +42,8 @@ export class CommentFormComponent {
 
     parseInput(e: Event) {
         if (this.getLatestCh() === '@') {
-            if (!this.displayUserSelect) {
-                this.displayUserSelect = !this.displayUserSelect;
-            }
-        } else {
+            this.displayUserSelect = true;
+        } else if(this.getLatestCh() === ' ') {
             this.displayUserSelect = false;
         }
 
