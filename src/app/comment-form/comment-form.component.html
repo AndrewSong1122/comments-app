@@ -1,0 +1,8 @@
+<input #commentField type="text" [(ngModel)]="comment" (input)="parseInput($event)">
+<button (click)="postComment()">Submit</button>
+<div #userSelect *ngIf="displayUserSelect" class="user-select">
+    <a *ngFor="let user of users" href="#" (click)="selectName($event)">{{user.name}}</a>
+</div>
+<div>
+    <p *ngFor="let comment of comments">{{comment}}</p>
+</div>
