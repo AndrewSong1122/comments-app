@@ -7,6 +7,7 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
 })
 export class CommentFormComponent {
     @ViewChild('commentField') commentField!: ElementRef;
+    @ViewChild('usersPopup') usersPopup!: ElementRef;
 
     users = [
         { 'userID': 1, 'name': 'Kevin' },
@@ -26,14 +27,13 @@ export class CommentFormComponent {
     getLatestCh() {
         let element = this.commentField.nativeElement;
         let ch = element.value[element.selectionStart - 1];
-        if(ch === '@') {
+        if (ch === '@') {
             this.latestAt = element.selectionStart;
         }
         return ch;
     }
 
     selectName(name: string, userID: number) {
-        let element = this.commentField.nativeElement;
         this.comment = this.comment.substring(0, this.latestAt) + name;
         this.displayUserSelect = false;
         this.commentField.nativeElement.focus();
@@ -43,7 +43,7 @@ export class CommentFormComponent {
     parseInput(e: Event) {
         if (this.getLatestCh() === '@') {
             this.displayUserSelect = true;
-        } else if(this.getLatestCh() === ' ') {
+        } else if (this.getLatestCh() === ' ') {
             this.displayUserSelect = false;
         }
 
@@ -63,6 +63,26 @@ export class CommentFormComponent {
         this.comments.push(this.comment);
         this.comment = '';
         this.tags = [];
+    }
+
+    handleKeyDown(e: Event) {
+        if (!this.displayUserSelect) return;
+
+        if ((e as KeyboardEvent).key === 'ArrowDown') {
+            if (document.activeElement?.tagName === 'INPUT') {
+                ((this.usersPopup.nativeElement as Element).firstElementChild as HTMLElement).focus();
+            } else {
+                ((document.activeElement as Node).nextSibling as HTMLElement).focus();
+            }
+        }
+        else if ((e as KeyboardEvent).key === 'ArrowUp') {
+            if ((e.target as Element).innerHTML === (this.usersPopup.nativeElement as Element).firstElementChild?.innerHTML) {
+                this.commentField.nativeElement.focus();
+                this.displayUserSelect = false;
+            } else {
+                ((e.target as Element as Node).previousSibling as HTMLElement).focus();
+            }
+        }
     }
 
     notifyUser(user: { userID: number, name: string }) {
