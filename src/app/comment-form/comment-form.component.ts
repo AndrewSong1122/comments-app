@@ -72,7 +72,9 @@ export class CommentFormComponent {
             if (document.activeElement?.tagName === 'INPUT') {
                 ((this.usersPopup.nativeElement as Element).firstElementChild as HTMLElement).focus();
             } else {
-                ((document.activeElement as Node).nextSibling as HTMLElement).focus();
+                if (((document.activeElement as Node).nextSibling as Element).tagName === 'A') {
+                    ((document.activeElement as Node).nextSibling as HTMLElement).focus();
+                }
             }
         } else if ((e as KeyboardEvent).key === 'ArrowUp') {
             if ((e.target as Element).innerHTML === (this.usersPopup.nativeElement as Element).firstElementChild?.innerHTML) {
