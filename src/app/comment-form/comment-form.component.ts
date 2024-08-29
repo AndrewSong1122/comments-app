@@ -65,7 +65,7 @@ export class CommentFormComponent {
         this.tags = [];
     }
 
-    handleKeyDown(e: Event) {
+    handleKeyDown(e: Event, name?: string, userID?: number) {
         if (!this.displayUserSelect) return;
 
         if ((e as KeyboardEvent).key === 'ArrowDown') {
@@ -74,14 +74,15 @@ export class CommentFormComponent {
             } else {
                 ((document.activeElement as Node).nextSibling as HTMLElement).focus();
             }
-        }
-        else if ((e as KeyboardEvent).key === 'ArrowUp') {
+        } else if ((e as KeyboardEvent).key === 'ArrowUp') {
             if ((e.target as Element).innerHTML === (this.usersPopup.nativeElement as Element).firstElementChild?.innerHTML) {
                 this.commentField.nativeElement.focus();
                 this.displayUserSelect = false;
             } else {
                 ((e.target as Element as Node).previousSibling as HTMLElement).focus();
             }
+        } else if ((e as KeyboardEvent).key === 'Enter' && name && userID) {
+            this.selectName(name, userID);
         }
     }
 

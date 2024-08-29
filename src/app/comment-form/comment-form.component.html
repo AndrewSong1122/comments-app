@@ -2,7 +2,7 @@
 <input #commentField type="text" [(ngModel)]="comment" (input)="parseInput($event)" (keydown)="handleKeyDown($event)">
 <button (click)="postComment()">Submit</button>
 <div *ngIf="displayUserSelect" class="user-select" #usersPopup>
-    <a *ngFor="let user of users" href="#" (click)="selectName(user.name, user.userID)" (keydown)="handleKeyDown($event)">{{user.name}}</a>
+    <a *ngFor="let user of users" href="#" (click)="selectName(user.name, user.userID)" (keydown)="handleKeyDown($event, user.name, user.userID)">{{user.name}}</a>
 </div>
 <div>
     <h3>Comments will show up down here</h3>
