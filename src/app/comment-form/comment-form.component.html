@@ -1,5 +1,5 @@
 <h2>Write your comment below</h2>
-<input #commentField type="text" [(ngModel)]="comment" (input)="parseInput($event)" (keydown)="handleKeyDown($event)">
+<input #commentField type="text" [(ngModel)]="comment" (input)="throttleParseInput($event)()" (keydown)="handleKeyDown($event)" (keyup)="handleKeyUp()">
 <button (click)="postComment()">Submit</button>
 <div *ngIf="displayUserSelect" class="user-select" #usersPopup>
     <a *ngFor="let user of users" href="#" (click)="selectName(user.name, user.userID)" (keydown)="handleKeyDown($event, user.name, user.userID)">{{user.name}}</a>

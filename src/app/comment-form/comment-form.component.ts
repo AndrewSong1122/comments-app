@@ -41,12 +41,21 @@ export class CommentFormComponent {
     }
 
     parseInput(e: Event) {
+        // if value === '@', bring up mentions
+        // if last 2 ch in value are ' @', bring up mentions
+        // otherwise, don't bring up mentions
+        let element = this.commentField.nativeElement;
+
         if (this.getLatestCh() === '@') {
+            this.displayUserSelect = true;
+        } else if(element.value.length > 1 && element.value[element.selectionStart - 1] === '@' && element.value[element.selectionStart - 2] === ' ') {
             this.displayUserSelect = true;
         } else if (this.getLatestCh() === ' ') {
             this.displayUserSelect = false;
         }
+    }
 
+    updateTags() {
         this.words = this.comment.split(' ');
 
         for (let user of this.tags) {
@@ -56,13 +65,35 @@ export class CommentFormComponent {
         }
     }
 
+    // returns throttled version of parseInput()
+    throttleParseInput(e: Event) {
+        let lastCall = 0;
+        return () => {
+            const now = new Date().getTime();
+            if (now - lastCall >= 100) {
+                this.parseInput(e);
+                lastCall = now;
+            }
+        };
+    }
+
     postComment() {
+        this.updateTags();
         for (let user of this.tags) {
             this.notifyUser(user);
         }
         this.comments.push(this.comment);
         this.comment = '';
         this.tags = [];
+        if(this.displayUserSelect) {
+            this.displayUserSelect = false;
+        }
+    }
+
+    handleKeyUp() {
+        if(this.commentField.nativeElement.value.length < 1) {
+            this.displayUserSelect = false;
+        }
     }
 
     handleKeyDown(e: Event, name?: string, userID?: number) {
